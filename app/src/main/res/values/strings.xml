@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Calle</string>
+    <string name="start_tracking">Start śledzenia</string>
+    <string name="stop_tracking">Stop śledzenia</string>
+    <string name="stop">Stop</string>
+    <string name="debug">Debug</string>
+    <string name="walked_stats">Przeszłe: %1$d / %2$d  ( %3$.1f%% )</string>
+    <string name="manual_hint">Stuknij ulicę, żeby oznaczyć lub odznaczyć ręcznie.</string>
+    <string name="osm_attribution">© OpenStreetMap — graf pieszy (centro storico + Giudecca), offline</string>
+    <string name="marked">Oznaczono: %1$s</string>
+    <string name="unmarked">Odznaczono: %1$s</string>
+    <string name="unnamed_street">calle bez nazwy</string>
+    <string name="notification_channel">Śledzenie spaceru</string>
+    <string name="notification_title">Calle</string>
+    <string name="notification_text">Nagrywanie spaceru — GPS przyciągany do calli</string>
+</resources>
