@@ -13,7 +13,6 @@ import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Build
 import android.os.IBinder
-import android.os.LocationRequest as PlatformLocationRequest
 import androidx.core.app.NotificationCompat
 import androidx.core.app.ServiceCompat
 import kotlinx.coroutines.CoroutineScope
@@ -63,6 +62,13 @@ class TrackingService : Service(), LocationListener {
 
     override fun onBind(intent: Intent?): IBinder? = null
 
+    @Deprecated("Deprecated in Java")
+    override fun onStatusChanged(provider: String?, status: Int, extras: android.os.Bundle?) = Unit
+
+    override fun onProviderEnabled(provider: String) = Unit
+
+    override fun onProviderDisabled(provider: String) = Unit
+
     override fun onLocationChanged(location: Location) {
         if (location.accuracy > 45f) return
         val raw = LatLon(lat = location.latitude, lon = location.longitude)
@@ -83,30 +89,15 @@ class TrackingService : Service(), LocationListener {
 
     private fun requestUpdates() {
         try {
-            if (Build.VERSION.SDK_INT >= 31) {
-                val request = PlatformLocationRequest.Builder(2_000L)
-                    .setMinUpdateIntervalMillis(1_000L)
-                    .setQuality(PlatformLocationRequest.QUALITY_HIGH_ACCURACY)
-                    .setMinUpdateDistanceMeters(1.5f)
-                    .build()
-                val providers = buildList {
-                    add(LocationManager.GPS_PROVIDER)
-                    if (Build.VERSION.SDK_INT >= 31) add(LocationManager.FUSED_PROVIDER)
+            val providers = buildList {
+                add(LocationManager.GPS_PROVIDER)
+                if (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+                    add(LocationManager.NETWORK_PROVIDER)
                 }
-                for (provider in providers) {
-                    if (locationManager.isProviderEnabled(provider)) {
-                        locationManager.requestLocationUpdates(provider, request, mainExecutor, this)
-                    }
-                }
-            } else {
-                if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                    @Suppress("DEPRECATION")
-                    locationManager.requestLocationUpdates(
-                        LocationManager.GPS_PROVIDER,
-                        1_500L,
-                        1.5f,
-                        this,
-                    )
+            }
+            for (provider in providers) {
+                if (locationManager.isProviderEnabled(provider)) {
+                    locationManager.requestLocationUpdates(provider, 1_500L, 1.5f, this)
                 }
             }
         } catch (_: SecurityException) {

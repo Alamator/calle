@@ -147,26 +147,27 @@ fun MapScreen(viewModel: CalleViewModel) {
     Box(modifier = Modifier.fillMaxSize().background(Ink)) {
         val mapView = rememberMapView()
         AndroidView(
-            factory = { view ->
-                view.getMapAsync { map ->
-                    map.uiSettings.isAttributionEnabled = false
-                    map.uiSettings.isLogoEnabled = false
-                    map.uiSettings.isCompassEnabled = true
-                    map.cameraPosition = CameraPosition.Builder()
-                        .target(VENICE_CENTER)
-                        .zoom(15.2)
-                        .build()
-                    map.setStyle(Style.Builder().fromJson(DARK_STYLE)) { style ->
-                        installLayers(style)
-                        map.addOnMapClickListener { latLng ->
-                            viewModel.onMapClick(latLng.latitude, latLng.longitude)
-                            true
+            factory = {
+                mapView.apply {
+                    getMapAsync { map ->
+                        map.uiSettings.isAttributionEnabled = false
+                        map.uiSettings.isLogoEnabled = false
+                        map.uiSettings.isCompassEnabled = true
+                        map.cameraPosition = CameraPosition.Builder()
+                            .target(VENICE_CENTER)
+                            .zoom(15.2)
+                            .build()
+                        map.setStyle(Style.Builder().fromJson(DARK_STYLE)) { style ->
+                            installLayers(style)
+                            map.addOnMapClickListener { latLng ->
+                                viewModel.onMapClick(latLng.latitude, latLng.longitude)
+                                true
+                            }
+                            mapRef = map
+                            styleReady = true
                         }
-                        mapRef = map
-                        styleReady = true
                     }
                 }
-                view
             },
             modifier = Modifier.fillMaxSize(),
         )

@@ -39,7 +39,8 @@ class StreetSnapperTest {
 
     @Test
     fun snapsToNearestCalle() {
-        val hit = snapper.snap(LatLon(45.43720, 12.33503), lastWayId = null)
+        // North of the east-west ponte so the nearest way is Calle A.
+        val hit = snapper.snap(LatLon(45.43732, 12.33503), lastWayId = null)
         assertNotNull(hit)
         assertEquals(1L, hit!!.hit.way.id)
         assertTrue(hit.hit.distanceM < 5.0)
@@ -47,9 +48,9 @@ class StreetSnapperTest {
 
     @Test
     fun hysteresisKeepsCurrentWay() {
-        val first = snapper.snap(LatLon(45.43720, 12.33503), lastWayId = null)
+        val first = snapper.snap(LatLon(45.43732, 12.33503), lastWayId = null)
         assertEquals(1L, first!!.hit.way.id)
-        val midway = LatLon(45.43720, 12.33518)
+        val midway = LatLon(45.43732, 12.33516)
         val held = snapper.snap(midway, lastWayId = 1L)
         assertNotNull(held)
         assertEquals(1L, held!!.hit.way.id)
